@@ -16,3 +16,6 @@
         (find-testcase-tag (:content (first xml-content)))
         xml-content)
       filter-result)))
+
+(defn -main [& args]
+  (print "IN Main"))
