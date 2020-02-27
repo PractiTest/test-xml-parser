@@ -65,7 +65,7 @@
   (let [grouped-map   (get-data arg)
         merge-content (for [x parsed-content]
                         (merge (get grouped-map (:name x)) x))]
-    merge-content)
+    merge-content))
 
 (defn -main [& [arg]]
   (if-not (empty? arg)
