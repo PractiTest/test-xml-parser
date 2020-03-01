@@ -71,12 +71,14 @@
   (let [file (clojure.java.io/file path)]
     (not (.isDirectory file))))
 
-(defn send-directory [directory]
-  (let [file-paths (for [file (file-seq directory)] (.getAbsolutePath file))
+(defn send-directory [directory parsed-content]
+  (let [file-paths       (for [file (file-seq directory)] (.getAbsolutePath file))
         [_ & files]      (for [file (file-seq directory)]
-                     (when (is-not-dir? (.getAbsolutePath file)) (slurp (.getAbsolutePath file))))]
+                           (when (is-not-dir? (.getAbsolutePath file)) (slurp (.getAbsolutePath file))))
+        result           (for [file files] (parse-n-merge-data file parsed-content))]
     (pprint/pprint file-paths)
-    (pprint/pprint files)))
+    (pprint/pprint files)
+    (pprint/pprint result)))
 
 (defn -main [& [arg]]
   (if-not (empty? arg)
