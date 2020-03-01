@@ -75,7 +75,7 @@
   (let [file-paths       (for [file (file-seq directory)] (.getAbsolutePath file))
         [_ & files]      (for [file (file-seq directory)]
                            (when (is-not-dir? (.getAbsolutePath file)) (slurp (.getAbsolutePath file))))
-        result           (for [i (count files)] (parse-n-merge-data (nth files i) (nth parsed-content i)))]
+        result           (for [i (range 0 (dec (count files)))] (parse-n-merge-data (nth files i) (nth parsed-content i)))]
     (pprint/pprint file-paths)
     (pprint/pprint files)
     (pprint/pprint result)))
