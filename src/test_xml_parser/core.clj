@@ -77,15 +77,22 @@
                            (when (is-not-dir? (.getAbsolutePath file)) (slurp (.getAbsolutePath file))))
         result           (for [i (range 0 (dec (count files)))]
                            ;; (parse-n-merge-data (nth files i) (nth parsed-content i))
-                           (println "index " i)
+                           (do
+                             (println "index " i)
+                             (println "field: " (nth files i))
+                             )
                            )]
     (pprint/pprint file-paths)
     (pprint/pprint files)
     (pprint/pprint result)))
 
+(defn get-dir-by-path [path]
+  (let [directory (clojure.java.io/file path)]
+    (send-directory directory nil)))
+
 (defn -main [& [arg]]
   (if-not (empty? arg)
-    (let [result (get-data arg)]
+    (let [result (get-dir-by-path arg)]
       ;; (doseq [arg args]
       ;;   ;; (pprint/pprint arg)
       ;;   (let [zip-val (zip-str arg)]
