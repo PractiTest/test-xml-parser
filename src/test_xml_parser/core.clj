@@ -67,9 +67,14 @@
                         (merge (get grouped-map (:name x)) x))]
     merge-content))
 
-(defn send-directory [[_ & remaining]]
-  (let [file-paths (for [file (file-seq remaining)] (.getAbsolutePath file))
-        files (for [file (file-seq remaining)]      (slurp (.getAbsolutePath file)))]
+(defn is-not-dir? [path]
+  (let [file (clojure.java.io/file path)]
+    (not (.isDirectory file))))
+
+(defn send-directory [directory]
+  (let [file-paths (for [file (file-seq directory)] (.getAbsolutePath file))
+        files (for [file (file-seq directory)]
+                (when (is-not-dir? (.getAbsolutePath file)) (slurp (.getAbsolutePath file))))]
     (pprint/pprint file-paths)
     (pprint/pprint files)))
 
