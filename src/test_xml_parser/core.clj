@@ -78,7 +78,6 @@
         result           (for [i (range 0 (dec (count files)))]
                            ;; (parse-n-merge-data (nth files i) (nth parsed-content i))
                            (println "index " i)
-                           (println "index " i)
                            )]
     (pprint/pprint file-paths)
     (pprint/pprint files)
