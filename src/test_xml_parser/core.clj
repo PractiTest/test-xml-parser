@@ -73,8 +73,8 @@
 
 (defn send-directory [directory]
   (let [file-paths (for [file (file-seq directory)] (.getAbsolutePath file))
-        files (for [file (file-seq directory)]
-                (when (is-not-dir? (.getAbsolutePath file)) (slurp (.getAbsolutePath file))))]
+        [_ & files]      (for [file (file-seq directory)]
+                     (when (is-not-dir? (.getAbsolutePath file)) (slurp (.getAbsolutePath file))))]
     (pprint/pprint file-paths)
     (pprint/pprint files)))
 
