@@ -67,6 +67,12 @@
                         (merge (get grouped-map (:name x)) x))]
     merge-content))
 
+(defn send-directory [directory]
+  (let [file-paths (for [file (file-seq directory)] (.getAbsolutePath file))
+        files (for [file (file-seq directory)]      (slurp (.getAbsolutePath file)))]
+    (pprint/pprint file-paths)
+    (pprint/pprint files)))
+
 (defn -main [& [arg]]
   (if-not (empty? arg)
     (let [result (get-data arg)]
