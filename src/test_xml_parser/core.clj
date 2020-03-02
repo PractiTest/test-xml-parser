@@ -80,8 +80,10 @@
                            (when (is-not-dir? (.getAbsolutePath file)) (slurp (.getAbsolutePath file))))
         result           (doseq [i (range 0 (count files))]
                            ;; (do
+
+                           (println "index " i)
+                           (println "(count files) " (count files))
                              (parse-n-merge-data (nth files i) (nth parsed-content i))
-                             ;; (println "index " i)
                              ;; (println "field: " (nth files i))
                              ;; (println "field: " (nth parsed-content i))
                              ;; )
