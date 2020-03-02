@@ -83,6 +83,7 @@
 
                            (println "index " i)
                            (println "(count files) " (count files))
+                           (println "(count parsed-content) " (count parsed-content))
                              (parse-n-merge-data (nth files i) (nth parsed-content i))
                              ;; (println "field: " (nth files i))
                              ;; (println "field: " (nth parsed-content i))
