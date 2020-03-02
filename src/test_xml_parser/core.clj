@@ -65,6 +65,9 @@
   (let [grouped-map   (get-data arg)
         merge-content (for [x parsed-content]
                         (merge (get grouped-map (:name x)) x))]
+    (pprint/pprint merge-content)
+    (println "grouped-map")
+    (pprint/pprint grouped-map)
     merge-content))
 
 (defn is-not-dir? [path]
@@ -75,20 +78,25 @@
   (let [file-paths       (for [file (file-seq directory)] (.getAbsolutePath file))
         [_ & files]      (for [file (file-seq directory)]
                            (when (is-not-dir? (.getAbsolutePath file)) (slurp (.getAbsolutePath file))))
-        result           (for [i (range 0 (dec (count files)))]
-                           ;; (parse-n-merge-data (nth files i) (nth parsed-content i))
-                           (do
-                             (println "index " i)
-                             (println "field: " (nth files i))
-                             )
+        result           (doseq [i (range 0 (count files))]
+                           ;; (do
+                             (parse-n-merge-data (nth files i) (nth parsed-content i))
+                             ;; (println "index " i)
+                             ;; (println "field: " (nth files i))
+                             ;; (println "field: " (nth parsed-content i))
+                             ;; )
                            )]
-    (pprint/pprint file-paths)
-    (pprint/pprint files)
-    (pprint/pprint result)))
+    ;; (pprint/pprint file-paths)
+    ;; (println (count files))
+    (println "=== Result ==")
+    ;; (pprint/pprint files)
+    (println result)
+    ;; result
+    ))
 
 (defn get-dir-by-path [path]
   (let [directory (clojure.java.io/file path)]
-    (send-directory directory nil)))
+    (send-directory directory '("" "" ""))))
 
 (defn -main [& [arg]]
   (if-not (empty? arg)
