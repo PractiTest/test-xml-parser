@@ -72,13 +72,7 @@
     merge-content))
 
 (defn parse-n-merge-data [grouped-files-map parsed-content]
-  (let [;;grouped-map   (get-data arg)
-        merge-content (merge (get grouped-files-map (:name parsed-content)) parsed-content)]
-         ;;(for [x parsed-content]
-            ;;             (merge (get grouped-map (:name x)) x))]
-    ;; (pprint/pprint {"====================== grouped-map ========================" grouped-files-map})
-    ;; (pprint/pprint {"====================== parsed-content ========================" parsed-content})
-    ;; (pprint/pprint {"====================== merge-content ========================" merge-content})
+  (let [merge-content (merge (get grouped-files-map (:name parsed-content)) parsed-content)]
     merge-content))
 
 (defn send-directory [directory parsed-content]
@@ -86,14 +80,7 @@
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
         files            (for [path filtered-paths] (slurp path))
         [grouped-data]     (get-files-data files)
-        ;; result           (for [i (range 0 (count files))] (parse-n-merge-data (nth files i) (nth parsed-content i)))
         result           (for [parsed parsed-content] (parse-n-merge-data grouped-data parsed))]
-    ;; (pprint/pprint {"====================== parsed-content2 ========================" parsed-content})
-    ;; (pprint/pprint {"====================== parsed-content2 count ========================" (count parsed-content)})
-    ;; (pprint/pprint {"====================== files count ========================" (count files)})
-    ;; (pprint/pprint {"====================== files ========================" files})
-    ;; (pprint/pprint {"====================== grouped-data ========================" grouped-data})
-    ;; (println "================ END ==============")
     result))
 
 (defn get-dir-by-path [path]
@@ -103,22 +90,5 @@
 (defn -main [& [arg]]
   (if-not (empty? arg)
     (let [result (get-dir-by-path arg)]
-      ;; (doseq [arg args]
-      ;;   ;; (pprint/pprint arg)
-      ;;   (let [zip-val (zip-str arg)]
-      ;;     ;; (pprint/pprint zip-val)
-      ;;     ;; (pprint/pprint (:tag zip-val))
-      ;;     ;; (println "=============")
-      ;;     (if (= (:tag (first zip-val)) :testsuites)
-      ;;       (merge result (zip/node (zip/right (zip/down (zip/down zip-val)))))
-      ;;       (merge result (zip/node (zip/right (zip/down zip-val))))
-      ;;       )
-      ;;     ;; (pprint/pprint (group-testcase-by-name (find-testcase-tag (zip-str (slurp arg)))))
-      ;;     ;; (println "=============")
-      ;;     ;; (pprint/pprint (group-testcase-data (find-tags (zip-str arg) :testcase)))
-      ;;     ;; (println "=============")
-      ;;     ;; (pprint/pprint (find-tags (zip-str arg) :system-out))
-      ;;     ;; (println "=============||==============")
-      ;;     ))
       (pprint/pprint {"Result:" result}))
     (throw (Exception. "Must have at least one argument!"))))
