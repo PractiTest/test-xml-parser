@@ -82,6 +82,7 @@
         result           (for [i (range 0 (count files))] (parse-n-merge-data (nth files i) (nth parsed-content i)))]
     (pprint/pprint {"====================== parsed-content2 ========================" parsed-content})
     (pprint/pprint {"====================== parsed-content2 count ========================" (count parsed-content)})
+    (pprint/pprint {"====================== files count ========================" (count files)})
     (println "================ END ==============")
     result))
 
