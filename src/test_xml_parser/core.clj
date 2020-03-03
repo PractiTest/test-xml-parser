@@ -65,6 +65,12 @@
   (let [grouped-files (for [file files] (get-data file))]
     grouped-files))
 
+(defn single-file-parse-n-merge-data [arg parsed-content]
+  (let [grouped-map   (get-data arg)
+        merge-content (for [x parsed-content]
+                        (merge (get grouped-map (:name x)) x))]
+    merge-content))
+
 (defn parse-n-merge-data [grouped-files-map parsed-content]
   (let [;;grouped-map   (get-data arg)
         merge-content (merge (get grouped-files-map (:name parsed-content)) parsed-content)]
