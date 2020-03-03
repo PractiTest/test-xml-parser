@@ -77,7 +77,7 @@
 (defn send-directory [directory parsed-content]
   (let [file-paths       (for [file (file-seq directory)] (.getAbsolutePath file))
         [_ & files]      (for [file (file-seq directory)]
-                           (when (is-not-dir? (.getAbsolutePath file)) (slurp (.getAbsolutePath file))))
+                           (when (is-not-dir? (.getAbsolutePath file)) {(.getAbsolutePath file) (slurp (.getAbsolutePath file))}))
         result           (doseq [i (range 0 (count files))]
                            ;; (do
 
