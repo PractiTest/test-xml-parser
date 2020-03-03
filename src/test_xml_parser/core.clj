@@ -77,14 +77,15 @@
 (defn send-directory [directory parsed-content]
   (let [file-paths       (for [file (file-seq directory)] (.getAbsolutePath file))
         filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
+        filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
         result           (doseq [i (range 0 (count filtered-files))]
                            ;; (do
 
                            (println "index " i)
                            ;; (println "(count files) " (count files))
                            ;; (println "(count parsed-content) " (count (first parsed-content)))
-                           (println "file: " (nth filtered-files i))
-                           (parse-n-merge-data (nth filtered-files i) (nth parsed-content i))
+                           (println "file: " (nth filtered-paths i))
+                           (parse-n-merge-data (nth filtered-paths i) (nth parsed-content i))
                              ;; (println "field: " (nth parsed-content i))
                              ;; )
                            )]
