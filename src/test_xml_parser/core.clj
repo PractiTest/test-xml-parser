@@ -63,8 +63,9 @@
 
 (defn parse-n-merge-data [arg parsed-content]
   (let [grouped-map   (get-data arg)
-        merge-content (for [x parsed-content]
-                        (merge (get grouped-map (:name x)) x))]
+        merge-content (merge (get (grouped-map (:name parsed-content)) parsed-content)]
+         ;;(for [x parsed-content]
+            ;;             (merge (get grouped-map (:name x)) x))]
     (pprint/pprint {"====================== parsed-content ========================" parsed-content})
     (pprint/pprint {"====================== merge-content ========================" merge-content})
     (pprint/pprint {"====================== grouped-map ========================" grouped-map})
