@@ -65,6 +65,8 @@
   (let [grouped-map   (get-data arg)
         merge-content (for [x parsed-content]
                         (merge (get grouped-map (:name x)) x))]
+    (println "====================== parsed-content ========================")
+    (pprint/pprint parsed-content)
     (println "====================== merge-content ========================")
     (pprint/pprint merge-content)
     (println "====================== grouped-map ========================")
@@ -79,9 +81,8 @@
   (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
         files            (for [path filtered-paths] (slurp path))
-        result           (reduce conj #{} (for [i (range 0 (count files))] (parse-n-merge-data (nth files i) (nth parsed-content i))))]
-    result
-    ))
+        result           (for [i (range 0 (count files))] (parse-n-merge-data (nth files i) (nth parsed-content i)))]
+    result))
 
 (defn get-dir-by-path [path]
   (let [directory (clojure.java.io/file path)]
