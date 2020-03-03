@@ -79,13 +79,13 @@
         filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
         files            (for [path filtered-paths] (slurp path))
-        result           (doseq [i (range 0 (count files))]
+        result           (for [i (range 0 (count files))]
                            ;; (do
 
-                           (println "index " i)
+                           ;; (println "index " i)
                            ;; (println "(count files) " (count files))
                            ;; (println "(count parsed-content) " (count (first parsed-content)))
-                           (println "file: " (nth files i))
+                           ;; (println "file: " (nth files i))
                            (parse-n-merge-data (nth files i) (nth parsed-content i))
                              ;; (println "field: " (nth parsed-content i))
                              ;; )
