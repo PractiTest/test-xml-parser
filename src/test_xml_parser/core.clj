@@ -71,18 +71,17 @@
     (pprint/pprint {"====================== merge-content ========================" merge-content})
     merge-content))
 
-(defn is-not-dir? [path]
-  (let [file (clojure.java.io/file path)]
-    (not (.isDirectory file))))
-
 (defn send-directory [directory parsed-content]
   (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
         files            (for [path filtered-paths] (slurp path))
+        grouped-data     (get-data files)
         result           (for [i (range 0 (count files))] (parse-n-merge-data (nth files i) (nth parsed-content i)))]
     (pprint/pprint {"====================== parsed-content2 ========================" parsed-content})
     (pprint/pprint {"====================== parsed-content2 count ========================" (count parsed-content)})
     (pprint/pprint {"====================== files count ========================" (count files)})
+    (pprint/pprint {"====================== files ========================" files})
+    (pprint/pprint {"====================== grouped-data ========================" grouped-data})
     (println "================ END ==============")
     result))
 
