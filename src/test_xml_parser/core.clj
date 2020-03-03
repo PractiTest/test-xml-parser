@@ -66,9 +66,9 @@
         merge-content (merge (get grouped-map (:name parsed-content)) parsed-content)]
          ;;(for [x parsed-content]
             ;;             (merge (get grouped-map (:name x)) x))]
-    (pprint/pprint {"====================== parsed-content ========================" parsed-content})
-    (pprint/pprint {"====================== merge-content ========================" merge-content})
-    (pprint/pprint {"====================== grouped-map ========================" grouped-map})
+    ;; (pprint/pprint {"====================== parsed-content ========================" parsed-content})
+    ;; (pprint/pprint {"====================== merge-content ========================" merge-content})
+    ;; (pprint/pprint {"====================== grouped-map ========================" grouped-map})
     merge-content))
 
 (defn is-not-dir? [path]
@@ -81,6 +81,7 @@
         files            (for [path filtered-paths] (slurp path))
         result           (for [i (range 0 (count files))] (parse-n-merge-data (nth files i) (nth parsed-content i)))]
     (pprint/pprint {"====================== parsed-content2 ========================" parsed-content})
+    (println "================ END ==============")
     result))
 
 (defn get-dir-by-path [path]
