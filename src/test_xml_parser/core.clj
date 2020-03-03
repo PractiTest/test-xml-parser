@@ -79,7 +79,10 @@
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
         files            (for [path filtered-paths] (slurp path))
         result           (for [i (range 0 (count files))] (parse-n-merge-data (nth files i) (nth parsed-content i)))]
-    result))
+    (println "=== Result ==")
+    (pprint/pprint result)
+    result
+    ))
 
 (defn get-dir-by-path [path]
   (let [directory (clojure.java.io/file path)]
