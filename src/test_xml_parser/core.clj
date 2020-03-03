@@ -65,9 +65,10 @@
   (let [grouped-map   (get-data arg)
         merge-content (for [x parsed-content]
                         (merge (get grouped-map (:name x)) x))]
-    ;; (pprint/pprint merge-content)
-    ;; (println "grouped-map")
-    ;; (pprint/pprint grouped-map)
+    (println "====================== merge-content ========================")
+    (pprint/pprint merge-content)
+    (println "====================== grouped-map ========================")
+    (pprint/pprint grouped-map)
     merge-content))
 
 (defn is-not-dir? [path]
@@ -78,9 +79,7 @@
   (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
         files            (for [path filtered-paths] (slurp path))
-        result           (for [i (range 0 (count files))] (parse-n-merge-data (nth files i) (nth parsed-content i)))]
-    (println "=== Result ==")
-    (pprint/pprint result)
+        result           (reduce conj #{} (for [i (range 0 (count files))] (parse-n-merge-data (nth files i) (nth parsed-content i))))]
     result
     ))
 
