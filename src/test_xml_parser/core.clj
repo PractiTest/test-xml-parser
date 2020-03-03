@@ -65,28 +65,29 @@
   (let [grouped-files (for [file files] (get-data file))]
     grouped-files))
 
-(defn parse-n-merge-data [arg parsed-content]
-  (let [grouped-map   (get-data arg)
-        merge-content (merge (get grouped-map (:name parsed-content)) parsed-content)]
+(defn parse-n-merge-data [grouped-files-map parsed-content]
+  (let [;;grouped-map   (get-data arg)
+        merge-content (merge (get grouped-files-map (:name parsed-content)) parsed-content)]
          ;;(for [x parsed-content]
             ;;             (merge (get grouped-map (:name x)) x))]
-    (pprint/pprint {"====================== grouped-map ========================" grouped-map})
-    (pprint/pprint {"====================== parsed-content ========================" parsed-content})
-    (pprint/pprint {"====================== merge-content ========================" merge-content})
+    ;; (pprint/pprint {"====================== grouped-map ========================" grouped-files-map})
+    ;; (pprint/pprint {"====================== parsed-content ========================" parsed-content})
+    ;; (pprint/pprint {"====================== merge-content ========================" merge-content})
     merge-content))
 
 (defn send-directory [directory parsed-content]
   (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
         files            (for [path filtered-paths] (slurp path))
-        grouped-data     (get-files-data files)
-        result           (for [i (range 0 (count files))] (parse-n-merge-data (nth files i) (nth parsed-content i)))]
-    (pprint/pprint {"====================== parsed-content2 ========================" parsed-content})
-    (pprint/pprint {"====================== parsed-content2 count ========================" (count parsed-content)})
-    (pprint/pprint {"====================== files count ========================" (count files)})
-    (pprint/pprint {"====================== files ========================" files})
-    (pprint/pprint {"====================== grouped-data ========================" grouped-data})
-    (println "================ END ==============")
+        [grouped-data]     (get-files-data files)
+        ;; result           (for [i (range 0 (count files))] (parse-n-merge-data (nth files i) (nth parsed-content i)))
+        result           (for [parsed parsed-content] (parse-n-merge-data grouped-data parsed))]
+    ;; (pprint/pprint {"====================== parsed-content2 ========================" parsed-content})
+    ;; (pprint/pprint {"====================== parsed-content2 count ========================" (count parsed-content)})
+    ;; (pprint/pprint {"====================== files count ========================" (count files)})
+    ;; (pprint/pprint {"====================== files ========================" files})
+    ;; (pprint/pprint {"====================== grouped-data ========================" grouped-data})
+    ;; (println "================ END ==============")
     result))
 
 (defn get-dir-by-path [path]
