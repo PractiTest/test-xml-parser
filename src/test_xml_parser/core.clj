@@ -61,6 +61,10 @@
       (group-testcase-data (find-tags (zip/down zip-val) :testcase))
       (group-testcase-data (find-tags zip-val :testcase)))))
 
+(defn get-files-data [files]
+  (let [grouped-files (for [file files] (get-data file))]
+    grouped-files)
+
 (defn parse-n-merge-data [arg parsed-content]
   (let [grouped-map   (get-data arg)
         merge-content (merge (get grouped-map (:name parsed-content)) parsed-content)]
@@ -75,7 +79,7 @@
   (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
         files            (for [path filtered-paths] (slurp path))
-        grouped-data     (get-data files)
+        grouped-data     (get-files-data files)
         result           (for [i (range 0 (count files))] (parse-n-merge-data (nth files i) (nth parsed-content i)))]
     (pprint/pprint {"====================== parsed-content2 ========================" parsed-content})
     (pprint/pprint {"====================== parsed-content2 count ========================" (count parsed-content)})
