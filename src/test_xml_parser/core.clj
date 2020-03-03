@@ -31,6 +31,10 @@
         nil)
       filter-result)))
 
+(defn filter-tags [xml-content tag-key]
+  (let [filter-result (filter #(= (:tag %) tag-key) xml-content)]
+    filter-result))
+
 (defn get-tag [xml-content tag-key]
   (let [filter-result (filter #(= (:tag %) tag-key) xml-content)]
     (if (empty? filter-result)
@@ -58,8 +62,8 @@
 (defn get-data [arg]
   (let [zip-val (zip-str arg)]
     (if (= (:tag (first zip-val)) :testsuites)
-      (group-testcase-data (find-tags (zip/down zip-val) :testcase))
-      (group-testcase-data (find-tags zip-val :testcase)))))
+      (group-testcase-data (filter-tags (zip/down zip-val) :testcase))
+      (group-testcase-data (filter-tags zip-val :testcase)))))
 
 (defn get-files-data [files]
   (let [grouped-files (for [file files] (get-data file))]
