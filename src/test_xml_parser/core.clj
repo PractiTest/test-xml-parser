@@ -63,7 +63,7 @@
 
 (defn get-files-data [files]
   (let [grouped-files (for [file files] (get-data file))]
-    grouped-files)
+    grouped-files))
 
 (defn parse-n-merge-data [arg parsed-content]
   (let [grouped-map   (get-data arg)
