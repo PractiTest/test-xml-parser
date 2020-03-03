@@ -80,6 +80,7 @@
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
         files            (for [path filtered-paths] (slurp path))
         result           (for [i (range 0 (count files))] (parse-n-merge-data (nth files i) (nth parsed-content i)))]
+    (pprint/pprint {"====================== parsed-content2 ========================" parsed-content})
     result))
 
 (defn get-dir-by-path [path]
