@@ -65,12 +65,9 @@
   (let [grouped-map   (get-data arg)
         merge-content (for [x parsed-content]
                         (merge (get grouped-map (:name x)) x))]
-    (println "====================== parsed-content ========================")
-    (pprint/pprint parsed-content)
-    (println "====================== merge-content ========================")
-    (pprint/pprint merge-content)
-    (println "====================== grouped-map ========================")
-    (pprint/pprint grouped-map)
+    (pprint/pprint {"====================== parsed-content ========================" parsed-content})
+    (pprint/pprint {"====================== merge-content ========================" merge-content})
+    (pprint/pprint {"====================== grouped-map ========================" grouped-map})
     merge-content))
 
 (defn is-not-dir? [path]
@@ -108,6 +105,5 @@
       ;;     ;; (pprint/pprint (find-tags (zip-str arg) :system-out))
       ;;     ;; (println "=============||==============")
       ;;     ))
-      (println "Result:")
-      (pprint/pprint result))
+      (pprint/pprint {"Result:" result}))
     (throw (Exception. "Must have at least one argument!"))))
