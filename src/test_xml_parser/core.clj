@@ -6,52 +6,13 @@
    [clojure.string :as str])
   (:import [java.io File]))
 
-(defn deep-merge [a & maps]
-  (if (map? a)
-    (apply merge-with deep-merge a maps)
-    (apply merge-with deep-merge maps)))
-
 (defn zip-str [s]
   (zip/xml-zip
    (xml/parse (java.io.ByteArrayInputStream. (.getBytes s)))))
 
-(defn find-testcase-tag [xml-content]
-  (let [filter-result (filter #(= (:tag %) :testcase) xml-content)]
-    (if (empty? filter-result)
-      (if (contains? (first xml-content) :content)
-        (find-testcase-tag (:content (first xml-content)))
-        nil)
-      filter-result)))
-
-(defn find-tags [xml-content tag-key]
-  (let [filter-result (filter #(= (:tag %) tag-key) xml-content)]
-    (if (empty? filter-result)
-      (if (contains? (first xml-content) :content)
-        (find-tags (:content (first xml-content)) tag-key)
-        nil)
-      filter-result)))
-
 (defn filter-tags [xml-content tag-key]
   (let [filter-result (filter #(= (:tag %) tag-key) xml-content)]
     filter-result))
-
-(defn get-tag [xml-content tag-key]
-  (let [filter-result (filter #(= (:tag %) tag-key) xml-content)]
-    (if (empty? filter-result)
-      (if (contains? (first xml-content) :content)
-        (find-tags (:content (first xml-content)) tag-key)
-        nil)
-      filter-result)))
-
-(defn hierarchy [keyseq xs]
-  (reduce (fn [m [ks x]]
-            (update-in m ks conj x))
-          {}
-          (for [x xs]
-            [(map x keyseq) (apply dissoc x keyseq)])))
-
-(defn group-testcase-by-name [testcase-list]
-  (group-by #(last (str/split (:classname (:attrs %)) #"\." )) testcase-list))
 
 (defn group-testcase-data [data]
   (->> data
