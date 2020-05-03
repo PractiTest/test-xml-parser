@@ -11,7 +11,10 @@
    (xml/parse (java.io.ByteArrayInputStream. (.getBytes s)))))
 
 (defn filter-tags [xml-content tag-key]
-  (let [filter-result (filter #(= (:tag %) tag-key) xml-content)]
+  (let [filter-result (filter #(= (:tag %) tag-key) xml-content)
+        print   (pprint/pprint "filter-result")
+        print   (pprint/pprint filter-result)
+        ]
     filter-result))
 
 (defn group-testcase-data [data]
