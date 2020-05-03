@@ -32,6 +32,8 @@
 
 (defn single-file-parse-n-merge-data [arg parsed-content]
   (let [grouped-map   (get-data arg)
+        print         (pprint/pprint "IN single-file-parse-n-merge-data")
+        print         (pprint/pprint grouped-map)
         merge-content (for [x parsed-content]
                         (merge (get grouped-map (:name x)) x))]
     merge-content))
