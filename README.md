@@ -1,14 +1,16 @@
 # test-xml-parser
 
-A Clojure library designed to ... well, that part is up to you.
+A Clojure library designed to get extra fields and add them to surefire standard parsing.
 
 ## Usage
 
-FIXME
+Send to send-directory fuction a directory and surefire parsed content and it will return the parsed content with the extra fields.
+
+Or send to single-file-parse-n-merge-data function file content and surefie parsed content and it will return the same result just for one file. 
 
 ## License
 
-Copyright © 2020 FIXME
+Copyright © 2020 PractiTest is a product by H.S. PractiTest Ltd. All Rights Reserved.
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at

@@ -6,48 +6,13 @@
    [clojure.string :as str])
   (:import [java.io File]))
 
-(defn deep-merge [a & maps]
-  (if (map? a)
-    (apply merge-with deep-merge a maps)
-    (apply merge-with deep-merge maps)))
-
 (defn zip-str [s]
   (zip/xml-zip
    (xml/parse (java.io.ByteArrayInputStream. (.getBytes s)))))
 
-(defn find-testcase-tag [xml-content]
-  (let [filter-result (filter #(= (:tag %) :testcase) xml-content)]
-    (if (empty? filter-result)
-      (if (contains? (first xml-content) :content)
-        (find-testcase-tag (:content (first xml-content)))
-        nil)
-      filter-result)))
-
-(defn find-tags [xml-content tag-key]
+(defn filter-tags [xml-content tag-key]
   (let [filter-result (filter #(= (:tag %) tag-key) xml-content)]
-    (if (empty? filter-result)
-      (if (contains? (first xml-content) :content)
-        (find-tags (:content (first xml-content)) tag-key)
-        nil)
-      filter-result)))
-
-(defn get-tag [xml-content tag-key]
-  (let [filter-result (filter #(= (:tag %) tag-key) xml-content)]
-    (if (empty? filter-result)
-      (if (contains? (first xml-content) :content)
-        (find-tags (:content (first xml-content)) tag-key)
-        nil)
-      filter-result)))
-
-(defn hierarchy [keyseq xs]
-  (reduce (fn [m [ks x]]
-            (update-in m ks conj x))
-          {}
-          (for [x xs]
-            [(map x keyseq) (apply dissoc x keyseq)])))
-
-(defn group-testcase-by-name [testcase-list]
-  (group-by #(last (str/split (:classname (:attrs %)) #"\." )) testcase-list))
+    filter-result))
 
 (defn group-testcase-data [data]
   (->> data
@@ -58,35 +23,37 @@
 (defn get-data [arg]
   (let [zip-val (zip-str arg)]
     (if (= (:tag (first zip-val)) :testsuites)
-      (group-testcase-data (find-tags (zip/down zip-val) :testcase))
-      (group-testcase-data (find-tags zip-val :testcase)))))
+      (group-testcase-data (filter-tags (zip/down zip-val) :testcase))
+      (group-testcase-data (filter-tags zip-val :testcase)))))
 
-(defn parse-n-merge-data [arg parsed-content]
+(defn get-files-data [files]
+  (let [grouped-files (for [file files] (get-data file))]
+    grouped-files))
+
+(defn single-file-parse-n-merge-data [arg parsed-content]
   (let [grouped-map   (get-data arg)
         merge-content (for [x parsed-content]
                         (merge (get grouped-map (:name x)) x))]
     merge-content))
 
+(defn parse-n-merge-data [grouped-files-map parsed-content]
+  (let [merge-content (merge (get grouped-files-map (:name parsed-content)) parsed-content)]
+    merge-content))
+
+(defn send-directory [directory parsed-content]
+  (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
+        filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
+        files            (for [path filtered-paths] (slurp path))
+        [grouped-data]     (get-files-data files)
+        result           (for [parsed parsed-content] (parse-n-merge-data grouped-data parsed))]
+    result))
+
+(defn get-dir-by-path [path]
+  (let [directory (clojure.java.io/file path)]
+    (send-directory directory '("" "" ""))))
+
 (defn -main [& [arg]]
   (if-not (empty? arg)
-    (let [result (get-data arg)]
-      ;; (doseq [arg args]
-      ;;   ;; (pprint/pprint arg)
-      ;;   (let [zip-val (zip-str arg)]
-      ;;     ;; (pprint/pprint zip-val)
-      ;;     ;; (pprint/pprint (:tag zip-val))
-      ;;     ;; (println "=============")
-      ;;     (if (= (:tag (first zip-val)) :testsuites)
-      ;;       (merge result (zip/node (zip/right (zip/down (zip/down zip-val)))))
-      ;;       (merge result (zip/node (zip/right (zip/down zip-val))))
-      ;;       )
-      ;;     ;; (pprint/pprint (group-testcase-by-name (find-testcase-tag (zip-str (slurp arg)))))
-      ;;     ;; (println "=============")
-      ;;     ;; (pprint/pprint (group-testcase-data (find-tags (zip-str arg) :testcase)))
-      ;;     ;; (println "=============")
-      ;;     ;; (pprint/pprint (find-tags (zip-str arg) :system-out))
-      ;;     ;; (println "=============||==============")
-      ;;     ))
-      (println "Result:")
-      (pprint/pprint result))
+    (let [result (get-dir-by-path arg)]
+      (pprint/pprint {"Result:" result}))
     (throw (Exception. "Must have at least one argument!"))))
