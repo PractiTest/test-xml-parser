@@ -11,13 +11,7 @@
    (xml/parse (java.io.ByteArrayInputStream. (.getBytes s)))))
 
 (defn filter-tags [xml-content tag-key]
-  (let [filter-result (filter #(= (:tag %) tag-key) xml-content)
-        print   (pprint/pprint "filter-result")
-        print   (pprint/pprint filter-result)
-        print   (pprint/pprint "xml-content")
-        print   (pprint/pprint tag-key)
-        print   (pprint/pprint xml-content)
-        ]
+  (let [filter-result (filter #(= (:tag %) tag-key) xml-content)]
     filter-result))
 
 (defn group-testcase-data [data]
@@ -27,10 +21,7 @@
        (into {})))
 
 (defn get-data [arg]
-  (let [zip-val (zip-str arg)
-        print   (pprint/pprint "zip-val")
-        print   (pprint/pprint zip-val)
-        ]
+  (let [zip-val (zip-str arg)]
     (if (= (:tag (first zip-val)) :testsuites)
       (group-testcase-data (filter-tags (:content (first (:content (first zip-val)))) :testcase))
       (group-testcase-data (filter-tags (:content (first zip-val)) :testcase)))))
@@ -41,8 +32,6 @@
 
 (defn single-file-parse-n-merge-data [arg parsed-content]
   (let [grouped-map   (get-data arg)
-        print         (pprint/pprint "IN single-file-parse-n-merge-data")
-        print         (pprint/pprint grouped-map)
         merge-content (for [x parsed-content]
                         (merge (get grouped-map (:name x)) x))]
     merge-content))
