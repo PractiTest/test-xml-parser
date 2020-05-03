@@ -14,6 +14,9 @@
   (let [filter-result (filter #(= (:tag %) tag-key) xml-content)
         print   (pprint/pprint "filter-result")
         print   (pprint/pprint filter-result)
+        print   (pprint/pprint "xml-content")
+        print   (pprint/pprint tag-key)
+        print   (pprint/pprint xml-content)
         ]
     filter-result))
 
