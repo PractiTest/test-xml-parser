@@ -21,7 +21,10 @@
        (into {})))
 
 (defn get-data [arg]
-  (let [zip-val (zip-str arg)]
+  (let [zip-val (zip-str arg)
+        print   (pprint/pprint "zip-val")
+        print   (pprint/pprint zip-val)
+        ]
     (if (= (:tag (first zip-val)) :testsuites)
       (group-testcase-data (filter-tags (zip/down zip-val) :testcase))
       (group-testcase-data (filter-tags zip-val :testcase)))))
