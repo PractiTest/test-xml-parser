@@ -32,8 +32,8 @@
         print   (pprint/pprint zip-val)
         ]
     (if (= (:tag (first zip-val)) :testsuites)
-      (group-testcase-data (filter-tags (zip/down zip-val) :testcase))
-      (group-testcase-data (filter-tags (zip/down zip-val) :testcase)))))
+      (group-testcase-data (filter-tags (:content zip-val) :testcase))
+      (group-testcase-data (filter-tags (:content zip-val) :testcase)))))
 
 (defn get-files-data [files]
   (let [grouped-files (for [file files] (get-data file))]
