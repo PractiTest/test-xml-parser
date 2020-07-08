@@ -39,6 +39,13 @@
   (pprint/pprint arg)
   (zip-str-bytes arg))
 
+(defn slurp-bytes
+  "Slurp the bytes from a slurpable thing"
+  [x]
+  (with-open [out (java.io.ByteArrayOutputStream.)]
+    (clojure.java.io/copy (clojure.java.io/input-stream x) out)
+    (.toByteArray out))
+
 (defn get-data [arg]
   (let [zip-val (zip-str arg)]
     (if (= (:tag (first zip-val)) :testsuites)
@@ -46,7 +53,7 @@
       (group-testcase-data (filter-tags (:content (first zip-val)) :testcase)))))
 
 (defn get-full-files-data [files]
-  (let [grouped-files (for [file files] (get-full-data file))]
+  (let [grouped-files (for [file files] (slurp-bytes file))]
     grouped-files))
 
 (defn get-files-data [files]
