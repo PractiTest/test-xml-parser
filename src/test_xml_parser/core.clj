@@ -42,13 +42,25 @@
 (defn slurp-bytes
   "Slurp the bytes from a slurpable thing"
   [x]
-  (file->bytes (io/file x))
+  (first
+   (map char (file->bytes (io/file x))))
   ;; (first
   ;;  (map char
   ;;       (with-open [out (java.io.ByteArrayOutputStream.)]
   ;;         (clojure.java.io/copy (clojure.java.io/input-stream x) out)
   ;;         (.toByteArray out))))
   )
+
+
+(defn debomify
+  [^String line]
+  (let [bom "\uFEFF"]
+    (if (.startsWith line bom)
+      (.substring line 1)
+      line)))
+
+(defn file-bom [file]
+  (doall (map #(.length %) (.split (debomify (slurp file)) "\n"))))
 
 (defn get-data [arg]
   (let [zip-val (zip-str arg)]
@@ -85,7 +97,7 @@
 (defn remove-bom [directory]
   (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
-        files            (for [path filtered-paths] (slurp-bytes path))
+        files            (for [path filtered-paths] (file-bom path))
         ;; [grouped-data]   (get-full-files-data files)
         ]
     files))
