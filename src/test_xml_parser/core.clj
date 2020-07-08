@@ -48,7 +48,7 @@
         result           (for [parsed parsed-content] (parse-n-merge-data grouped-data parsed))]
     result))
 
-(defn fix-BOM [directory]
+(defn remove-bom [directory]
   (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
         files            (for [path filtered-paths] (slurp path))
