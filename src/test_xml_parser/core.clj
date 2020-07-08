@@ -83,7 +83,7 @@
 (defn remove-bom [directory]
   (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
-        [files]            (for [path filtered-paths] (slurp-bytes path))
+        files            (for [path filtered-paths] (slurp-bytes path))
         ;; [grouped-data]   (get-full-files-data files)
         ]
     files))
