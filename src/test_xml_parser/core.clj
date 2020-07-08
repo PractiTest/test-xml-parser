@@ -14,10 +14,8 @@
     (.toByteArray xout)))
 
 (defn zip-str-bytes [s]
-  (file->bytes s)
-  ;; (.toByteArray
-   ;; (java.io.ByteArrayInputStream. (.getBytes s)))
-  )
+  (.toByteArray
+   (java.io.ByteArrayInputStream. (.getBytes s))))
 
 (defn zip-str [s]
   (zip/xml-zip
