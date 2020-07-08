@@ -49,10 +49,12 @@
     result))
 
 (defn fix-BOM [directory]
-  (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
-        filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
-        files            (for [path filtered-paths] (slurp path))
-        [grouped-data]   (get-files-data files)]
+  (let [grouped-data "grouped-data"
+        ;; filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
+        ;; filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
+        ;; files            (for [path filtered-paths] (slurp path))
+        ;; [grouped-data]   (get-files-data files)
+        ]
     grouped-data))
 
 (defn get-dir-by-path [path]
