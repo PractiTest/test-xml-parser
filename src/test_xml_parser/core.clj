@@ -4,7 +4,7 @@
    [clojure.zip    :as zip]
    [clojure.pprint :as pprint]
    [clojure.string :as str]
-   [io             :as io])
+   [clojure.io     :as io])
   (:import [java.io File]))
 
 (defn zip-str-bytes [s]
