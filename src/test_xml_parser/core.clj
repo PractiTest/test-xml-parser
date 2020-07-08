@@ -7,7 +7,7 @@
   (:import [java.io File]))
 
 (defn zip-str-bytes [s]
-  (xml/parse (java.io.ByteArrayInputStream. (.getBytes s))))
+  (java.io.ByteArrayInputStream. (.getBytes s)))
 
 (defn zip-str [s]
   (zip/xml-zip
