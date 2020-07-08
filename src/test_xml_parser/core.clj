@@ -52,9 +52,9 @@
       (group-testcase-data (filter-tags (:content (first (:content (first zip-val)))) :testcase))
       (group-testcase-data (filter-tags (:content (first zip-val)) :testcase)))))
 
-(defn get-full-files-data [files]
-  (let [grouped-files (for [file files] (slurp-bytes file))]
-    grouped-files))
+;; (defn get-full-files-data [files]
+;;   (let [grouped-files (for [file files] (slurp-bytes file))]
+;;     grouped-files))
 
 (defn get-files-data [files]
   (let [grouped-files (for [file files] (get-data file))]
@@ -81,9 +81,10 @@
 (defn remove-bom [directory]
   (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
-        files            (for [path filtered-paths] (slurp path))
-        [grouped-data]   (get-full-files-data files)]
-    grouped-data))
+        files            (for [path filtered-paths] (slurp-bytes path))
+        ;; [grouped-data]   (get-full-files-data files)
+        ]
+    files))
 
 (defn get-dir-by-path [path]
   (let [directory (clojure.java.io/file path)]
