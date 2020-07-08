@@ -35,8 +35,8 @@
        (into {})))
 
 (defn get-full-data [arg]
-  (pprint/pptint "arg: ")
-  (pprint/pptint arg)
+  (pprint/pprint "arg: ")
+  (pprint/pprint arg)
   (zip-str-bytes arg))
 
 (defn get-data [arg]
