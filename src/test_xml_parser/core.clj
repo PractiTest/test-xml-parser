@@ -60,7 +60,7 @@
       line)))
 
 (defn file-bom [file]
-  (doall (map #(.length %) (debomify (slurp file)))))
+  (doall (map debomify (slurp file))))
 
 (defn get-data [arg]
   (let [zip-val (zip-str arg)]
