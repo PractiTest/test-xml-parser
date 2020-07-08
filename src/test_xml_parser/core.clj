@@ -42,7 +42,7 @@
 (defn slurp-bytes
   "Slurp the bytes from a slurpable thing"
   [x]
-  (file->bytes (io/file "/foo-pc" "junk.txt"))
+  (file->bytes (io/file x))
   ;; (first
   ;;  (map char
   ;;       (with-open [out (java.io.ByteArrayOutputStream.)]
