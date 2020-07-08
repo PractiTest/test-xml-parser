@@ -6,6 +6,9 @@
    [clojure.string :as str])
   (:import [java.io File]))
 
+(defn zip-str-bytes [s]
+  (xml/parse (java.io.ByteArrayInputStream. (.getBytes s))))
+
 (defn zip-str [s]
   (zip/xml-zip
    (xml/parse (java.io.ByteArrayInputStream. (.getBytes s)))))
@@ -21,7 +24,7 @@
        (into {})))
 
 (defn get-full-data [arg]
-  (zip-str arg))
+  (zip-str-bytes arg))
 
 (defn get-data [arg]
   (let [zip-val (zip-str arg)]
