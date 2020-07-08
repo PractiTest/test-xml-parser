@@ -42,10 +42,11 @@
 (defn slurp-bytes
   "Slurp the bytes from a slurpable thing"
   [x]
-  (map char
-       (with-open [out (java.io.ByteArrayOutputStream.)]
-         (clojure.java.io/copy (clojure.java.io/input-stream x) out)
-         (.toByteArray out))))
+  (first
+   (map char
+        (with-open [out (java.io.ByteArrayOutputStream.)]
+          (clojure.java.io/copy (clojure.java.io/input-stream x) out)
+          (.toByteArray out)))))
 
 (defn get-data [arg]
   (let [zip-val (zip-str arg)]
