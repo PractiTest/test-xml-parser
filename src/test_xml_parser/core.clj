@@ -1,13 +1,14 @@
 (ns test-xml-parser.core
   (:require
-   [clojure.xml :as xml]
-   [clojure.zip :as zip]
+   [clojure.xml    :as xml]
+   [clojure.zip    :as zip]
    [clojure.pprint :as pprint]
-   [clojure.string :as str])
+   [clojure.string :as str]
+   [io             :as io])
   (:import [java.io File]))
 
 (defn zip-str-bytes [s]
-  (zip/xml-zip
+  (io/input-stream
    (java.io.ByteArrayInputStream. (.getBytes s))))
 
 (defn zip-str [s]
