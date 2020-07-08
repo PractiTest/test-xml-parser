@@ -48,6 +48,13 @@
         result           (for [parsed parsed-content] (parse-n-merge-data grouped-data parsed))]
     result))
 
+(defn fix-BOM [directory]
+  (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
+        filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
+        files            (for [path filtered-paths] (slurp path))
+        [grouped-data]   (get-files-data files)]
+    grouped-data))
+
 (defn get-dir-by-path [path]
   (let [directory (clojure.java.io/file path)]
     (send-directory directory '("" "" ""))))
