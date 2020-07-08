@@ -7,19 +7,6 @@
    [clojure.java.io :as io])
   (:import [java.io File]))
 
-(defn file->bytes [file]
-  (with-open [xin (io/input-stream file)
-              xout (java.io.ByteArrayOutputStream.)]
-    (io/copy xin xout)
-    (.toByteArray xout)))
-
-(defn zip-str-bytes [s]
-  (pprint/pprint "s: ")
-  (pprint/pprint s)
-  (pprint/pprint "s")
-  (pprint/pprint s)
-  (xml/parse (java.io.ByteArrayInputStream. (.getBytes s))))
-
 (defn zip-str [s]
   (zip/xml-zip
    (xml/parse (java.io.ByteArrayInputStream. (.getBytes s)))))
@@ -33,24 +20,6 @@
        (group-by #(last (str/split (:classname (:attrs %)) #"\." )))
        (map (fn [[k vals]] [k (first (map :attrs vals))]))
        (into {})))
-
-(defn get-full-data [arg]
-  (pprint/pprint "arg: ")
-  (pprint/pprint arg)
-  (zip-str-bytes arg))
-
-(defn slurp-bytes
-  "Slurp the bytes from a slurpable thing"
-  [x]
-  (first
-   (map char (file->bytes (io/file x))))
-  ;; (first
-  ;;  (map char
-  ;;       (with-open [out (java.io.ByteArrayOutputStream.)]
-  ;;         (clojure.java.io/copy (clojure.java.io/input-stream x) out)
-  ;;         (.toByteArray out))))
-  )
-
 
 (defn debomify
   [^String line]
@@ -68,10 +37,6 @@
     (if (= (:tag (first zip-val)) :testsuites)
       (group-testcase-data (filter-tags (:content (first (:content (first zip-val)))) :testcase))
       (group-testcase-data (filter-tags (:content (first zip-val)) :testcase)))))
-
-;; (defn get-full-files-data [files]
-;;   (let [grouped-files (for [file files] (slurp-bytes file))]
-;;     grouped-files))
 
 (defn get-files-data [files]
   (let [grouped-files (for [file files] (get-data file))]
@@ -98,9 +63,7 @@
 (defn remove-bom [directory]
   (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
-        files            (for [path filtered-paths] (file-bom path))
-        ;; [grouped-data]   (get-full-files-data files)
-        ]
+        files            (for [path filtered-paths] (file-bom path))]
     files))
 
 (defn return-file [file]
