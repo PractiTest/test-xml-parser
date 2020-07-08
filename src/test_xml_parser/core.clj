@@ -44,7 +44,7 @@
   [x]
   (with-open [out (java.io.ByteArrayOutputStream.)]
     (clojure.java.io/copy (clojure.java.io/input-stream x) out)
-    (.toByteArray out))
+    (.toByteArray out)))
 
 (defn get-data [arg]
   (let [zip-val (zip-str arg)]
