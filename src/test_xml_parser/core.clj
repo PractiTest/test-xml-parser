@@ -20,11 +20,18 @@
        (map (fn [[k vals]] [k (first (map :attrs vals))]))
        (into {})))
 
+(defn get-full-data [arg]
+  (zip-str arg))
+
 (defn get-data [arg]
   (let [zip-val (zip-str arg)]
     (if (= (:tag (first zip-val)) :testsuites)
       (group-testcase-data (filter-tags (:content (first (:content (first zip-val)))) :testcase))
       (group-testcase-data (filter-tags (:content (first zip-val)) :testcase)))))
+
+(defn get-full-files-data [files]
+  (let [grouped-files (for [file files] (get-full-data file))]
+    grouped-files))
 
 (defn get-files-data [files]
   (let [grouped-files (for [file files] (get-data file))]
@@ -52,7 +59,7 @@
   (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
         files            (for [path filtered-paths] (slurp path))
-        [grouped-data]   (get-files-data files)]
+        [grouped-data]   (get-full-files-data files)]
     grouped-data))
 
 (defn get-dir-by-path [path]
