@@ -14,8 +14,11 @@
     (.toByteArray xout)))
 
 (defn zip-str-bytes [s]
-  (.toByteArray
-   (java.io.ByteArrayInputStream. (.getBytes s))))
+  (pprint/pptint "s: ")
+  (pprint/pptint s)
+  (pprint/pptint "s")
+  (pprint/pptint s)
+  (xml/parse (java.io.ByteArrayInputStream. (.getBytes s))))
 
 (defn zip-str [s]
   (zip/xml-zip
@@ -32,6 +35,8 @@
        (into {})))
 
 (defn get-full-data [arg]
+  (pprint/pptint "arg: ")
+  (pprint/pptint arg)
   (zip-str-bytes arg))
 
 (defn get-data [arg]
