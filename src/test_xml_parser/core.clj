@@ -7,9 +7,17 @@
    [clojure.java.io :as io])
   (:import [java.io File]))
 
+(defn file->bytes [file]
+  (with-open [xin (io/input-stream file)
+              xout (java.io.ByteArrayOutputStream.)]
+    (io/copy xin xout)
+    (.toByteArray xout)))
+
 (defn zip-str-bytes [s]
-  (io/input-stream
-   (java.io.ByteArrayInputStream. (.getBytes s))))
+  (file->bytes s)
+  ;; (.toByteArray
+   ;; (java.io.ByteArrayInputStream. (.getBytes s)))
+  )
 
 (defn zip-str [s]
   (zip/xml-zip
