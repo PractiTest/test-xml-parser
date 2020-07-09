@@ -25,7 +25,8 @@
 
 (defn debomify
   [^String line]
-  (let [bom "\uFEFF"]
+  (let [bom "\uFEFF"
+        _   (pprint/pprint {"line:" line})]
     (if (.startsWith line bom)
       (doall
        (pprint/pprint "IS BOM")
