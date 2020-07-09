@@ -4,7 +4,8 @@
    [clojure.zip     :as zip]
    [clojure.pprint  :as pprint]
    [clojure.string  :as str]
-   [clojure.java.io :as io])
+   [clojure.java.io :as io]
+   [clj-bom.core    :as bom])
   (:import [java.io File]))
 
 (defn zip-str [s]
