@@ -5,6 +5,7 @@
             :url "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [org.flatland/useful "0.9.0"]
-                 [clj-bom "0.1.2"]]
+                 ;; [org.clojure/clj-bom "0.1.2"]
+                 ]
   :main test-xml-parser.core
   :repl-options {:init-ns test-xml-parser.core})

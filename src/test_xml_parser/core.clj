@@ -5,7 +5,8 @@
    [clojure.pprint  :as pprint]
    [clojure.string  :as str]
    [clojure.java.io :as io]
-   [clj-bom.core    :as bom])
+   ;; [clj-bom.core    :as bom]
+   )
   (:import [java.io File]))
 
 (defn zip-str [s]
@@ -26,7 +27,9 @@
   [^String line]
   (let [bom "\uFEFF"]
     (if (.startsWith line bom)
-      (.substring line 1)
+      (doall
+       (pprint/pprint "IS BOM")
+        (.substring line 1))
       line)))
 
 (defn file-bom [file]
@@ -64,6 +67,7 @@
 (defn remove-bom [directory]
   (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
+        _                (pprint/pprint "IN HERE")
         files            (for [path filtered-paths] (file-bom path))]
     files))
 
