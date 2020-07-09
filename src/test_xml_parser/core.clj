@@ -34,7 +34,8 @@
       line)))
 
 (defn file-bom [file]
-  (let [domless-file   (debomify (slurp file))]
+  (let [domless-file   (debomify (slurp file))
+        _              (pprint/pprint {"file: " file})]
     (spit file domless-file)))
 
 (defn get-data [arg]
