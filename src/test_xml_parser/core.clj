@@ -25,15 +25,13 @@
 
 (defn debomify
   [^String line]
-  (let [bom "\uFEFF"
-        _   (pprint/pprint {"line:" line})]
+  (let [bom "\uFEFF"]
     (if (.startsWith line bom)
       (.substring line 1)
       line)))
 
 (defn file-bom [file]
-  (let [domless-file   (debomify (slurp file))
-        _              (pprint/pprint {"file: " file})]
+  (let [domless-file   (debomify (slurp file))]
     (spit file domless-file)))
 
 (defn get-data [arg]
@@ -67,7 +65,6 @@
 (defn remove-bom [directory]
   (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
-        _                (pprint/pprint "IN HERE")
         files            (doall (map file-bom filtered-paths))]
     files))
 
