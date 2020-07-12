@@ -72,10 +72,15 @@
     result))
 
 (defn remove-bom [directory]
-  (let [file-seqs        (file-seq (io/file directory))
+  (let [_ (pprint/pprint {"directory: " directory})
+        file-seqs        (file-seq (io/file directory))
+        _ (pprint/pprint {"file-seqs: " file-seqs})
         filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) file-seqs)
+        _ (pprint/pprint {"filtered-files: " filtered-files})
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
-        files            (doall (map file-bom filtered-paths))]
+        _ (pprint/pprint {"filtered-paths: " filtered-paths})
+        files            (doall (map file-bom filtered-paths))
+        ]
     files))
 
 (defn return-file [file]
