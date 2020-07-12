@@ -28,9 +28,7 @@
   (let [bom "\uFEFF"
         _   (pprint/pprint {"line:" line})]
     (if (.startsWith line bom)
-      (doall
-       (pprint/pprint "IS BOM")
-        (.substring line 1))
+      (.substring line 1)
       line)))
 
 (defn file-bom [file]
