@@ -35,7 +35,7 @@
         full-path      (str/split file #"/")
         directory      (str/join "/" (butlast full-path))
         filename       (last full-path)
-        new-path       (str directory "tmp/" filename)]
+        new-path       (str directory "/tmp/" filename)]
     (spit new-path domless-file)))
 
 (defn get-data [arg]
