@@ -32,7 +32,7 @@
 
 (defn file-bom [file]
   (let [domless-file   (debomify (slurp file))]
-    (spit file domless-file)))
+    (spit (str "tmp/"file) domless-file)))
 
 (defn get-data [arg]
   (let [zip-val (zip-str arg)]
