@@ -35,6 +35,10 @@
         directory      (str/join "/" (butlast full-path))
         filename       (last full-path)
         new-path       (str directory "/tmp/" filename)]
+    (pprint/pprint {"new-path: " new-path})
+    (pprint/pprint {"(str directory \"/tmp\"): " (str directory "/tmp")})
+    (pprint/pprint {"(.exists (io/file (str directory \"/tmp\"))): " (.exists (io/file (str directory "/tmp")))})
+    (pprint/pprint {"(.isDirectory (io/file (str directory \"/tmp\"))): " (.isDirectory (io/file (str directory "/tmp")))})
     (when (not (.exists (io/file (str directory "/tmp")))) (.mkdir (java.io.File. (str directory "/tmp"))))
     (spit new-path domless-file)))
 
