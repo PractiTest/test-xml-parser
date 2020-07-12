@@ -31,8 +31,12 @@
       line)))
 
 (defn file-bom [file]
-  (let [domless-file   (debomify (slurp file))]
-    (spit (str "tmp/"file) domless-file)))
+  (let [domless-file   (debomify (slurp file))
+        full-path      (str/split file #"/")
+        directory      (butlast full-path)
+        filename       (last full-path)
+        new-path       (str directory "tmp/" filename)]
+    (spit new-path domless-file)))
 
 (defn get-data [arg]
   (let [zip-val (zip-str arg)]
