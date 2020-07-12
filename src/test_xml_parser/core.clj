@@ -70,7 +70,7 @@
   (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
         _                (pprint/pprint "IN HERE")
-        files            (for [path filtered-paths] (file-bom path))]
+        files            (doall (map file-bom filtered-paths))]
     files))
 
 (defn return-file [file]
