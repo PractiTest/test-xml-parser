@@ -59,7 +59,7 @@
     merge-content))
 
 (defn send-directory [directory parsed-content]
-  (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq (io/file directory)))
+  (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (io/file directory))
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
         files            (for [path filtered-paths] (slurp path))
         [grouped-data]     (get-files-data files)
