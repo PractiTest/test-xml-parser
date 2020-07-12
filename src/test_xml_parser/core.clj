@@ -35,7 +35,7 @@
         directory      (str/join "/" (butlast full-path))
         filename       (last full-path)
         new-path       (str directory "/tmp/" filename)]
-    (when (not (.isDirectory (io/file (str directory "/tmp")))) (.mkdir (java.io.File. (str directory "/tmp"))))
+    (when (not (.exists (io/file (str directory "/tmp")))) (.mkdir (java.io.File. (str directory "/tmp"))))
     (spit new-path domless-file)))
 
 (defn get-data [arg]
