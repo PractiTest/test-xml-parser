@@ -59,18 +59,17 @@
     merge-content))
 
 (defn send-directory [directory parsed-content]
-  (let [_ (pprint/pprint {"directory: " directory})
-        _ (pprint/pprint {"parsed-content: " parsed-content})
-        file-seqs (file-seq (io/file directory))
+  (let [file-seqs        (file-seq (io/file directory))
         filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) file-seqs)
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
         files            (for [path filtered-paths] (slurp path))
         [grouped-data]     (get-files-data files)
-        result           (parse-n-merge-data grouped-data parsed-content)]
+        result           (for [parsed parsed-content] (parse-n-merge-data grouped-data parsed))]
     result))
 
 (defn remove-bom [directory]
-  (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq (io/file directory)))
+  (let [file-seqs        (file-seq (io/file directory))
+        filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) file-seqs)
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
         files            (doall (map file-bom filtered-paths))]
     files))
