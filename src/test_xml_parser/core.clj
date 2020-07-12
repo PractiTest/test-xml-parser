@@ -35,8 +35,7 @@
         directory      (str/join "/" (butlast full-path))
         filename       (last full-path)
         new-path       (str directory "/tmp/" filename)]
-    (io/make-parents new-path)
-    ;; (.mkdir (java.io.File. (str directory "/tmp")))
+    (.mkdir (java.io.File. (str directory "/tmp")))
     (spit new-path domless-file)))
 
 (defn get-data [arg]
@@ -60,11 +59,11 @@
     merge-content))
 
 (defn send-directory [directory parsed-content]
-  (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
+  (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq (io/file directory)))
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
         files            (for [path filtered-paths] (slurp path))
         [grouped-data]     (get-files-data files)
-        result           (for [parsed parsed-content] (parse-n-merge-data grouped-data parsed))]
+        result           (parse-n-merge-data grouped-data parsed-content)]
     result))
 
 (defn remove-bom [directory]
