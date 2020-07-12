@@ -65,8 +65,7 @@
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
         files            (for [path filtered-paths] (slurp path))
         [grouped-data]   (get-files-data files)
-        result           (doall (map parse-n-merge-data parsed-content grouped-data))
-        ]
+        result           (doall (map parse-n-merge-data parsed-content grouped-data))]
     result))
 
 (defn remove-bom [directory]
