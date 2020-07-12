@@ -64,7 +64,7 @@
 
 (defn send-directory [directory parsed-content]
   (let [file-seqs        (file-seq (io/file directory))
-        filtered-files   (filter (fn [file] (and (str/ends-with? (.getAbsolutePath file) ".xml") (not ((str/includes? file "/tmp"))))) file-seqs)
+        filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) file-seqs)
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
         files            (for [path filtered-paths] (slurp path))
         [grouped-data]     (get-files-data files)
@@ -75,7 +75,9 @@
   (let [_ (pprint/pprint {"directory: " directory})
         file-seqs        (file-seq (io/file directory))
         _ (pprint/pprint {"file-seqs: " file-seqs})
-        filtered-files   (filter (fn [file] (and (str/ends-with? (.getAbsolutePath file) ".xml") (not ((str/includes? file "/tmp"))))) file-seqs)
+        xml-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) file-seqs)
+        _ (pprint/pprint {"xml-files: " xml-files})
+        filtered-files   (filter (fn [file] (not (str/contains? file "/tmp"))) xml-files)
         _ (pprint/pprint {"filtered-files: " filtered-files})
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
         _ (pprint/pprint {"filtered-paths: " filtered-paths})
