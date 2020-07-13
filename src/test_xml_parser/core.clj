@@ -30,13 +30,18 @@
       line)))
 
 (defn file-bom [file]
-  (let [domless-file   (debomify (slurp file))
-        full-path      (str/split file #"/")
-        directory      (str/join "/" (butlast full-path))
-        filename       (last full-path)
-        new-path       (str directory "/tmp/" filename)]
-    (when (not (.exists (io/file (str directory "/tmp")))) (.mkdir (java.io.File. (str directory "/tmp"))))
-    (spit new-path domless-file)))
+  (let [bomless-file     (debomify (slurp file))
+        directory        (.getParent file)
+        directory-name   (.getName directory)
+        directory-parent (.getParent directory)
+        filename         (.getName file)
+        seperator        (if (str/includes file "/") "/" "\\")
+        new-path         (str directory-parent seperator "tmp" seperator directory-name seperator filename)]
+    (when (not
+           (.exists (io/file (str directory-parent seperator "tmp"))))
+      (do (.mkdir (io/file (str directory-parent seperator "tmp")))
+          (.mkdir (io/file (str directory-parent seperator "tmp" seperator directory-name)))))
+    (spit new-path bomless-file)))
 
 (defn get-data [arg]
   (let [zip-val (zip-str arg)]
@@ -58,23 +63,22 @@
   (let [merge-content (merge (get grouped-files-map (:name parsed-content)) parsed-content)]
     merge-content))
 
+(defn get-files-path [directory]
+  (let [file-seqs        (.listFiles (io/file directory))
+        filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) file-seqs)
+        filtered-paths   (for [file filtered-files] (.getAbsolutePath file))]
+  filtered-paths))
+
 (defn send-directory [directory parsed-content]
-  (let [file-seqs        (file-seq (io/file directory))
-        xml-files        (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) file-seqs)
-        filtered-files   (filter (fn [file] (not (str/includes? file "/tmp/"))) xml-files)
-        filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
+  (let [filtered-paths   (get-files-path directory)
         files            (for [path filtered-paths] (slurp path))
         [grouped-data]   (get-files-data files)
         result           (for [parsed parsed-content] (parse-n-merge-data grouped-data parsed))]
     result))
 
 (defn remove-bom [directory]
-  (let [file-seqs        (file-seq (io/file directory))
-        xml-files        (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) file-seqs)
-        filtered-files   (filter (fn [file] (not (str/includes? file "/tmp/"))) xml-files)
-        filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
-        files            (doall (map file-bom filtered-paths))
-        ]
+  (let [filtered-paths   (get-files-path directory)
+        files            (doall (map file-bom filtered-paths))]
     files))
 
 (defn return-file [file]
