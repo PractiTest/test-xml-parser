@@ -31,9 +31,9 @@
 
 (defn file-bom [file]
   (let [bomless-file     (debomify (slurp file))
-        directory        (.getParent file)
+        directory        (.parent file)
         directory-name   (.getName (io/file directory))
-        directory-parent (.getParent (io/file directory))
+        directory-parent (.parent (io/file directory))
         filename         (.getName file)
         seperator        (if (str/includes file "/") "/" "\\")
         new-path         (str directory-parent seperator "tmp" seperator directory-name seperator filename)]
