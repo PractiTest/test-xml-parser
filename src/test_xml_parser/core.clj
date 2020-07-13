@@ -85,6 +85,9 @@
 
 (defn remove-bom [directory]
   (let [filtered-paths   (get-files-path directory)]
+    (pprint/pprint "remove-bom")
+    (pprint/pprint "filtered-paths: ")
+    (pprint/pprint filtered-paths)
     (doseq [path filtered-paths]
       (file-bom path))))
 
