@@ -29,18 +29,19 @@
       (.substring line 1)
       line)))
 
-(defn file-bom [file]
-  (let [bomless-file     (debomify (slurp file))
-        directory        (.parent file)
-        directory-name   (.getName (io/file directory))
-        directory-parent (.parent (io/file directory))
-        filename         (.getName file)
-        seperator        (if (str/includes file "/") "/" "\\")
+(defn file-bom [path]
+  (let [bomless-file     (debomify (slurp path))
+        directory        (.getParent (io/file path))
+        directory-name   (.getName   (io/file directory))
+        directory-parent (.getParent (io/file directory))
+        filename         (.getName (io/file path))
+        seperator        (if (str/includes path "/") "/" "\\")
         new-path         (str directory-parent seperator "tmp" seperator directory-name seperator filename)]
-    (when (not
-           (.exists (io/file (str directory-parent seperator "tmp"))))
-      (do (.mkdir (io/file (str directory-parent seperator "tmp")))
-          (.mkdir (io/file (str directory-parent seperator "tmp" seperator directory-name)))))
+    (when
+        (not
+         (.exists (io/file (str directory-parent seperator "tmp"))))
+      (do (.mkdir   (io/file (str directory-parent seperator "tmp")))
+          (.mkdir   (io/file (str directory-parent seperator "tmp" seperator directory-name)))))
     (spit new-path bomless-file)))
 
 (defn get-data [arg]
@@ -77,9 +78,9 @@
     result))
 
 (defn remove-bom [directory]
-  (let [filtered-paths   (get-files-path directory)
-        files            (doall (map file-bom filtered-paths))]
-    files))
+  (let [filtered-paths   (get-files-path directory)]
+    (doseq [path filtered-paths]
+      (file-bom path))))
 
 (defn return-file [file]
   (pprint/pprint (slurp file)))
