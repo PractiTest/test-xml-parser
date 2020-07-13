@@ -37,6 +37,12 @@
         filename         (.getName (io/file path))
         seperator        (if (str/includes path "/") "/" "\\")
         new-path         (str directory-parent seperator "tmp" seperator directory-name seperator filename)]
+    (pprint/pprint "new-path: ")
+    (pprint/pprint new-path)
+    (pprint/pprint "directory: ")
+    (pprint/pprint directory)
+    (pprint/pprint "directory-parent: ")
+    (pprint/pprint directory-parent)
     (when
         (not
          (.exists (io/file (str directory-parent seperator "tmp"))))
