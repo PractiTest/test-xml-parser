@@ -8,13 +8,12 @@
    )
   (:import [java.io File]))
 
-(defn delete-recursively [fname]
-  (let [func (fn [func f]
-               (when (.isDirectory f)
-                 (doseq [f2 (.listFiles f)]
-                   (func func f2)))
-               (io/delete-file f))]
-    (func func (io/file fname))))
+(defn delete-recursively! [fname]
+  (let [f (io/file fname)]
+    (when (.isDirectory f)
+      (doseq [child-path (.listFiles f)]
+        (delete-recursively! child-path)))
+    (io/delete-file f)))
 
 (defn zip-str [s]
   (zip/xml-zip
@@ -37,19 +36,22 @@
       (.substring line 1)
       line)))
 
+(defn create-container-folders [directory-parent directory-name]
+  (when
+      (not (.exists (io/file directory-parent "tmp")))
+    (.mkdir   (io/file directory-parent "tmp")))
+  (when (not (.exists (io/file directory-parent "tmp" directory-name)))
+    (.mkdir   (io/file directory-parent "tmp" directory-name))))
+
 (defn file-bom [path]
   (let [bomless-file     (debomify (slurp path))
         directory        (.getParent (io/file path))
         directory-name   (.getName   (io/file directory))
         directory-parent (.getParent (io/file directory))
-        filename         (.getName (io/file path))
-        seperator        (if (str/includes? path "/") "/" "\\")
-        new-path         (str directory-parent seperator "tmp" seperator directory-name seperator filename)]
-    (when
-        (not (.exists (io/file (str directory-parent seperator "tmp"))))
-      (.mkdir   (io/file (str directory-parent seperator "tmp"))))
-    (when (not (.exists (io/file (str directory-parent seperator "tmp" seperator directory-name))))
-      (.mkdir   (io/file (str directory-parent seperator "tmp" seperator directory-name))))
+        filename         (.getName   (io/file path))
+        new-file         (io/file directory-parent "tmp" directory-name filename)
+        new-path         (.getAbsolutePath new-file)]
+    (create-container-folders directory-parent directory-name)
     (spit new-path bomless-file)))
 
 (defn get-data [arg]
