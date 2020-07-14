@@ -38,10 +38,10 @@
         seperator        (if (str/includes? path "/") "/" "\\")
         new-path         (str directory-parent seperator "tmp" seperator directory-name seperator filename)]
     (when
-        (not
-         (.exists (io/file (str directory-parent seperator "tmp"))))
-      (do (.mkdir   (io/file (str directory-parent seperator "tmp")))
-          (.mkdir   (io/file (str directory-parent seperator "tmp" seperator directory-name)))))
+        (not (.exists (io/file (str directory-parent seperator "tmp"))))
+      (.mkdir   (io/file (str directory-parent seperator "tmp"))))
+    (when (not (.exists (io/file (str directory-parent seperator "tmp" seperator directory-name))))
+      (.mkdir   (io/file (str directory-parent seperator "tmp" seperator directory-name))))
     (spit new-path bomless-file)))
 
 (defn get-data [arg]
