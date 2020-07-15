@@ -80,11 +80,20 @@
         filtered-paths   (for [file filtered-files] (.getAbsolutePath file))]
   filtered-paths))
 
-(defn send-directory [directory parsed-content]
+(defn merge-results [directory parsed-content]
   (let [filtered-paths   (get-files-path directory)
         files            (for [path filtered-paths] (slurp path))
         [grouped-data]   (get-files-data files)
         result           (for [parsed parsed-content] (parse-n-merge-data grouped-data parsed))]
+    result))
+
+(defn send-directory [directory parsed-content]
+  (let [report-result      (list )
+        result             (first
+                            (conj report-result
+                                  (first
+                                   (for [dir directory]
+                                     (merge-results dir parsed-content)))))]
     result))
 
 (defn remove-bom [directory]
