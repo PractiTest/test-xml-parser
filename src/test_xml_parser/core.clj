@@ -36,22 +36,22 @@
       (.substring line 1)
       line)))
 
-(defn create-container-folders [directory-parent directory-name]
+(defn create-container-folders [directory-parent directory-name tmp]
   (when
-      (not (.exists (io/file directory-parent "tmp")))
-    (.mkdir   (io/file directory-parent "tmp")))
-  (when (not (.exists (io/file directory-parent "tmp" directory-name)))
-    (.mkdir   (io/file directory-parent "tmp" directory-name))))
+      (not (.exists (io/file directory-parent tmp)))
+    (.mkdir   (io/file directory-parent tmp)))
+  (when (not (.exists (io/file directory-parent tmp directory-name)))
+    (.mkdir   (io/file directory-parent tmp directory-name))))
 
-(defn file-bom [path]
+(defn file-bom [path tmp]
   (let [bomless-file     (debomify (slurp path))
         directory        (.getParent (io/file path))
         directory-name   (.getName   (io/file directory))
         directory-parent (.getParent (io/file directory))
         filename         (.getName   (io/file path))
-        new-file         (io/file directory-parent "tmp" directory-name filename)
+        new-file         (io/file directory-parent tmp directory-name filename)
         new-path         (.getAbsolutePath new-file)]
-    (create-container-folders directory-parent directory-name)
+    (create-container-folders directory-parent directory-name tmp)
     (spit new-path bomless-file)))
 
 (defn get-data [arg]
@@ -96,10 +96,10 @@
                                      (merge-results dir parsed-content)))))]
     result))
 
-(defn remove-bom [directory]
+(defn remove-bom [directory tmp]
   (let [filtered-paths   (get-files-path directory)]
     (doseq [path filtered-paths]
-      (file-bom path))))
+      (file-bom path tmp))))
 
 (defn return-file [file]
   (pprint/pprint (slurp file)))
