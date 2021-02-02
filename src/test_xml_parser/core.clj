@@ -17,7 +17,7 @@
 
 (defn zip-str [s]
   (zip/xml-zip
-   (xml/parse (java.io.ByteArrayInputStream. (.getBytes s)))))
+   (xml/parse (java.io.ByteArrayInputStream. (.getBytes s "UTF-8")))))
 
 (defn filter-tags [xml-content tag-key]
   (let [filter-result (filter #(= (:tag %) tag-key) xml-content)]
