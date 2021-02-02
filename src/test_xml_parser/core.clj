@@ -1,14 +1,23 @@
 (ns test-xml-parser.core
   (:require
-   [clojure.xml :as xml]
-   [clojure.zip :as zip]
-   [clojure.pprint :as pprint]
-   [clojure.string :as str])
+   [clojure.xml     :as xml]
+   [clojure.zip     :as zip]
+   [clojure.pprint  :as pprint]
+   [clojure.string  :as str]
+   [clojure.java.io :as io]
+   )
   (:import [java.io File]))
+
+(defn delete-recursively! [fname]
+  (let [f (io/file fname)]
+    (when (.isDirectory f)
+      (doseq [child-path (.listFiles f)]
+        (delete-recursively! child-path)))
+    (io/delete-file f)))
 
 (defn zip-str [s]
   (zip/xml-zip
-   (xml/parse (java.io.ByteArrayInputStream. (.getBytes s)))))
+   (xml/parse (java.io.ByteArrayInputStream. (.getBytes s "UTF-8")))))
 
 (defn filter-tags [xml-content tag-key]
   (let [filter-result (filter #(= (:tag %) tag-key) xml-content)]
@@ -19,6 +28,31 @@
        (group-by #(last (str/split (:classname (:attrs %)) #"\." )))
        (map (fn [[k vals]] [k (first (map :attrs vals))]))
        (into {})))
+
+(defn debomify
+  [^String line]
+  (let [bom "\uFEFF"]
+    (if (.startsWith line bom)
+      (.substring line 1)
+      line)))
+
+(defn create-container-folders [directory-parent directory-name tmp]
+  (when
+      (not (.exists (io/file directory-parent tmp)))
+    (.mkdir   (io/file directory-parent tmp)))
+  (when (not (.exists (io/file directory-parent tmp directory-name)))
+    (.mkdir   (io/file directory-parent tmp directory-name))))
+
+(defn file-bom [path tmp]
+  (let [bomless-file     (debomify (slurp path))
+        directory        (.getParent (io/file path))
+        directory-name   (.getName   (io/file directory))
+        directory-parent (.getParent (io/file directory))
+        filename         (.getName   (io/file path))
+        new-file         (io/file directory-parent tmp directory-name filename)
+        new-path         (.getAbsolutePath new-file)]
+    (create-container-folders directory-parent directory-name tmp)
+    (spit new-path bomless-file)))
 
 (defn get-data [arg]
   (let [zip-val (zip-str arg)]
@@ -40,13 +74,41 @@
   (let [merge-content (merge (get grouped-files-map (:name parsed-content)) parsed-content)]
     merge-content))
 
-(defn send-directory [directory parsed-content]
-  (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
-        filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
+(defn get-files-path [directory]
+  (let [file-seqs        (.listFiles (io/file directory))
+        filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) file-seqs)
+        filtered-paths   (for [file filtered-files] (.getAbsolutePath file))]
+  filtered-paths))
+
+(defn merge-results [directory parsed-content]
+  (let [filtered-paths   (get-files-path directory)
         files            (for [path filtered-paths] (slurp path))
-        [grouped-data]     (get-files-data files)
+        [grouped-data]   (get-files-data files)
         result           (for [parsed parsed-content] (parse-n-merge-data grouped-data parsed))]
     result))
+
+(defn send-directory [directory parsed-content]
+  (let [report-result      (list )
+        result             (first
+                            (conj report-result
+                                  (first
+                                   (for [dir directory]
+                                     (merge-results dir parsed-content)))))]
+    result))
+
+(defn remove-bom [directory tmp]
+  (let [filtered-paths   (get-files-path directory)]
+    (doseq [path filtered-paths]
+      (file-bom path tmp))))
+
+(defn return-file [file]
+  (pprint/pprint (slurp file)))
+
+(defn return-files [directory]
+  (let [filtered-files   (filter (fn [file] (str/ends-with? (.getAbsolutePath file) ".xml")) (file-seq directory))
+        filtered-paths   (for [file filtered-files] (.getAbsolutePath file))
+        files            (for [path filtered-paths] (return-file path))]
+    files))
 
 (defn get-dir-by-path [path]
   (let [directory (clojure.java.io/file path)]
